@@ -16,7 +16,7 @@ exports.CONCLUSIONS = [
     'cancelled',
     'timed_out',
     'action_required',
-    'failure',
+    'failure'
 ];
 
 
@@ -44,30 +44,41 @@ run();
 /***/ }),
 
 /***/ 647:
-/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
 "use strict";
 
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.execute = exports.getWorkflowConclusion = exports.getJobConclusions = exports.getJobs = exports.getTargetRunId = exports.getOctokit = exports.getAccessToken = exports.uniqueArray = void 0;
+exports.execute = exports.getWorkflowConclusion = exports.getJobConclusions = exports.getJobs = void 0;
 const context_1 = __nccwpck_require__(53);
 const core_1 = __nccwpck_require__(186);
 const constant_1 = __nccwpck_require__(363);
-const github_1 = __nccwpck_require__(438);
-const uniqueArray = (array) => [...new Set(array)];
-exports.uniqueArray = uniqueArray;
-const getAccessToken = (required) => core_1.getInput('GITHUB_TOKEN', { required });
-exports.getAccessToken = getAccessToken;
-const getOctokit = (token) => github_1.getOctokit(token !== null && token !== void 0 ? token : exports.getAccessToken(true), {});
-exports.getOctokit = getOctokit;
-const getTargetRunId = (context) => /^\d+$/.test(core_1.getInput('TARGET_RUN_ID')) ? Number(core_1.getInput('TARGET_RUN_ID')) : context.runId;
-exports.getTargetRunId = getTargetRunId;
+const utils = __importStar(__nccwpck_require__(918));
 const getJobs = async (octokit, context) => octokit.paginate(octokit.rest.actions.listJobsForWorkflowRun, {
     ...context.repo,
-    'run_id': exports.getTargetRunId(context),
+    'run_id': utils.getTargetRunId(context),
 });
 exports.getJobs = getJobs;
-const getJobConclusions = (jobs) => exports.uniqueArray(Object.values(jobs
+const getJobConclusions = (jobs) => utils.uniqueArray(Object.values(jobs
     .filter(job => null !== job.conclusion)
     .map(job => ({ name: job.name, conclusion: String(job.conclusion) }))
     .reduce((acc, job) => ({ ...acc, [job.name]: job.conclusion }), {})));
@@ -78,11 +89,7 @@ exports.getWorkflowConclusion = getWorkflowConclusion;
 const execute = async () => {
     const accessToken = core_1.getInput('GITHUB_TOKEN');
     const context = new context_1.Context();
-    //const octokit = github.getOctokit(accessToken);
-    // const octokit = new github.GitHub(accessToken)
-    //const octokit = github.getOctokit(accessToken)
-    // const getOctokit = (token?: string): Octokit => getOctokitInstance(token ?? accessToken, {}) as Octokit;
-    const jobs = await exports.getJobs(exports.getOctokit(), context);
+    const jobs = await exports.getJobs(utils.getOctokit(), context);
     core_1.debug(`Jobs in debug: '${jobs}'`);
     const conclusions = exports.getJobConclusions(jobs);
     core_1.debug(`Conclusions in debug: '${conclusions}'`);
@@ -95,6 +102,27 @@ const execute = async () => {
     }
 };
 exports.execute = execute;
+
+
+/***/ }),
+
+/***/ 918:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.getTargetRunId = exports.getOctokit = exports.getAccessToken = exports.uniqueArray = void 0;
+const github_1 = __nccwpck_require__(438);
+const core_1 = __nccwpck_require__(186);
+const uniqueArray = (array) => [...new Set(array)];
+exports.uniqueArray = uniqueArray;
+const getAccessToken = (required) => core_1.getInput('GITHUB_TOKEN', { required });
+exports.getAccessToken = getAccessToken;
+const getOctokit = (token) => github_1.getOctokit(token !== null && token !== void 0 ? token : exports.getAccessToken(true), {});
+exports.getOctokit = getOctokit;
+const getTargetRunId = (context) => /^\d+$/.test(core_1.getInput('TARGET_RUN_ID')) ? Number(core_1.getInput('TARGET_RUN_ID')) : context.runId;
+exports.getTargetRunId = getTargetRunId;
 
 
 /***/ }),

@@ -1,4 +1,3 @@
-import {resolve} from 'path';
 import {setFailed} from '@actions/core';
 import {execute} from './process';
 

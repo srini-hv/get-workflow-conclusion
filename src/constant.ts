@@ -5,5 +5,5 @@ export const CONCLUSIONS = [
   'cancelled',
   'timed_out',
   'action_required',
-  'failure',
+  'failure'
 ];
