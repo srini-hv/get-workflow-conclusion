@@ -1,0 +1,29 @@
+name: Workflow Conclusion Action
+
+description: GitHub action to get workflow conclusion.
+
+inputs:
+  GITHUB_TOKEN:
+    description: Secret GitHub API token to use for making API requests.
+    default: ${{ github.token }}
+    required: true
+  TARGET_RUN_ID:
+    description: Target run id
+    default: ${{ github.run_id }}
+    required: true
+  SET_ENV_NAME:
+    description: Env name
+    required: false
+    default: WORKFLOW_CONCLUSION
+  FALLBACK_CONCLUSION:
+    description: Fallback conclusion
+    required: false
+    default: skipped
+
+outputs:
+  conclusion:
+    description: Workflow conclusion
+
+runs:
+  using: node12
+  main: dist/index.js
